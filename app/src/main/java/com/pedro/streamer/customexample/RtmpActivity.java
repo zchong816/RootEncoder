@@ -48,6 +48,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.pedro.common.ConnectChecker;
 import com.pedro.encoder.input.video.CameraHelper;
 import com.pedro.encoder.input.video.CameraOpenException;
+import com.pedro.encoder.utils.CodecUtil;
 import com.pedro.library.rtmp.RtmpCamera1;
 import com.pedro.streamer.R;
 import com.pedro.streamer.utils.PathUtils;
@@ -111,6 +112,18 @@ public class RtmpActivity extends AppCompatActivity
     bRecord.setOnClickListener(this);
     Button switchCamera = findViewById(R.id.switch_camera);
     switchCamera.setOnClickListener(this);
+
+
+    try {
+      List<String> allCodecsInfo = CodecUtil.showAllCodecsInfo();
+      if (allCodecsInfo != null) {
+        for (String info : allCodecsInfo) {
+          Log.d("TAG_R", "codecs:" + info);
+        }
+      }
+    } catch (Throwable t) {
+      t.printStackTrace();
+    }
   }
 
   private void prepareOptionsMenuViews() {
@@ -232,6 +245,8 @@ public class RtmpActivity extends AppCompatActivity
           rtmpCamera1.getStreamClient().setAuthorization(user, password);
         }
         if (rtmpCamera1.isRecording() || prepareEncoders()) {
+          etUrl.setText("rtmp://172.16.200.103:1935/rtmplive");
+//          etUrl.setText("rtmp://push-rtmp-l26.douyincdn.com/third/stream-691220657645289958?expire=65f804a2&sign=5ff611a29d886ebb81e05e8fc5e7f79c");
           rtmpCamera1.startStream(etUrl.getText().toString());
         } else {
           //If you see this all time when you start stream,
