@@ -246,6 +246,7 @@ public class RtmpActivity extends AppCompatActivity
         }
         if (rtmpCamera1.isRecording() || prepareEncoders()) {
           etUrl.setText("rtmp://172.16.200.103:1935/rtmplive");
+//          etUrl.setText("rtmp://192.168.1.112:1935/rtmplive");
 //          etUrl.setText("rtmp://push-rtmp-l26.douyincdn.com/third/stream-691220657645289958?expire=65f804a2&sign=5ff611a29d886ebb81e05e8fc5e7f79c");
           rtmpCamera1.startStream(etUrl.getText().toString());
         } else {
