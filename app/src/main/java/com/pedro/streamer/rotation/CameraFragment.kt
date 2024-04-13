@@ -118,6 +118,7 @@ class CameraFragment: Fragment(), ConnectChecker {
 
     bStartStop.setOnClickListener {
       if (!genericStream.isStreaming) {
+        etUrl.setText("rtmp://192.168.1.112:1935/rtmplive")
         genericStream.startStream(etUrl.text.toString())
         bStartStop.setImageResource(R.drawable.stream_stop_icon)
       } else {
