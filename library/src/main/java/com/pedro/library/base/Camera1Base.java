@@ -201,20 +201,18 @@ public abstract class Camera1Base {
     return cameraManager.isFaceDetectionEnabled();
   }
 
-  /**
-   * @return true if success, false if fail (not supported or called before start camera)
-   */
-  public boolean enableVideoStabilization() {
-    return cameraManager.enableVideoStabilization();
+  public void setVideoStabilizationEnable(boolean videoStabilizationEnable) {
+    cameraManager.setVideoStabilizationEnable(videoStabilizationEnable);
   }
 
-  public void disableVideoStabilization() {
-    cameraManager.disableVideoStabilization();
+  public void setRecordingHintEnable(boolean recordingHintEnable) {
+    cameraManager.setRecordingHintEnable(recordingHintEnable);
   }
 
-  public boolean isVideoStabilizationEnabled() {
-    return cameraManager.isVideoStabilizationEnabled();
+  public void setUseCustomSurfaceTexture(boolean useCustomSurfaceTexture) {
+    cameraManager.setUseCustomSurfaceTexture(useCustomSurfaceTexture);
   }
+
 
   /**
    * Use getCameraFacing instead

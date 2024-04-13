@@ -22,6 +22,7 @@ import android.media.MediaFormat;
 import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.SystemClock;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -272,21 +273,50 @@ public abstract class BaseEncoder implements EncoderCallback {
   @RequiresApi(api = Build.VERSION_CODES.M)
   private void createAsyncCallback() {
     callback = new MediaCodec.Callback() {
+      long beginInputMs = 0;
+      long prevLogInputMs = 0;
+
       @Override
       public void onInputBufferAvailable(@NonNull MediaCodec mediaCodec, int inBufferIndex) {
         try {
+          long curMs = SystemClock.uptimeMillis();
+          if (beginInputMs != 0) {
+            if (curMs - prevLogInputMs > 5000) {
+              Log.d(TAG, "onInputBufferAvailable on call interval: " + (SystemClock.uptimeMillis() - beginInputMs));
+            }
+          }
+          beginInputMs = SystemClock.uptimeMillis();
           inputAvailable(mediaCodec, inBufferIndex);
+          if (curMs - prevLogInputMs > 5000) {
+            prevLogInputMs = SystemClock.uptimeMillis();
+            Log.d(TAG, "onInputBufferAvailable inputAvailable run_times: " + (SystemClock.uptimeMillis() - beginInputMs));
+          }
         } catch (IllegalStateException e) {
           Log.i(TAG, "Encoding error", e);
           reloadCodec(e);
         }
       }
 
+
+      long beginOutputMs = 0;
+      long prevLogOutputMs = 0;
+
       @Override
       public void onOutputBufferAvailable(@NonNull MediaCodec mediaCodec, int outBufferIndex,
           @NonNull MediaCodec.BufferInfo bufferInfo) {
         try {
+          long curMs = SystemClock.uptimeMillis();
+          if (beginOutputMs != 0) {
+            if (curMs - prevLogOutputMs > 5000) {
+              Log.d(TAG, "onOutputBufferAvailable on call interval: " + (SystemClock.uptimeMillis() - beginOutputMs));
+            }
+          }
+          beginOutputMs = SystemClock.uptimeMillis();
           outputAvailable(mediaCodec, outBufferIndex, bufferInfo);
+          if (curMs - prevLogOutputMs > 5000) {
+            prevLogOutputMs = SystemClock.uptimeMillis();
+            Log.d(TAG, "onOutputBufferAvailable outputAvailable run_times: " + (SystemClock.uptimeMillis() - beginOutputMs));
+          }
         } catch (IllegalStateException e) {
           Log.i(TAG, "Encoding error", e);
           reloadCodec(e);

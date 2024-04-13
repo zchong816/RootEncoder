@@ -22,6 +22,7 @@ import android.media.MediaCodecInfo;
 import android.media.MediaFormat;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
 import android.util.Pair;
 import android.view.Surface;
@@ -467,6 +468,7 @@ public class VideoEncoder extends BaseEncoder implements GetCameraData {
     return null;
   }
 
+  long prevLogMs = 0;
   @Override
   protected Frame getInputFrame() throws InterruptedException {
     Frame frame = queue.take();
@@ -475,13 +477,26 @@ public class VideoEncoder extends BaseEncoder implements GetCameraData {
     byte[] buffer = frame.getBuffer();
     boolean isYV12 = frame.getFormat() == ImageFormat.YV12;
 
+    long begin = SystemClock.uptimeMillis();
+    long curMs = begin;
     int orientation = frame.isFlip() ? frame.getOrientation() + 180 : frame.getOrientation();
     if (orientation >= 360) orientation -= 360;
     buffer = isYV12 ? YUVUtil.rotateYV12(buffer, width, height, orientation)
-        : YUVUtil.rotateNV21(buffer, width, height, orientation);
+            : YUVUtil.rotateNV21(buffer, width, height, orientation);
 
+    if (curMs - prevLogMs > 5000) {
+      Log.d(TAG, "getInputFrame rotate run_times:" + (SystemClock.uptimeMillis() - begin) + " orientation:" + orientation);
+    }
+
+    begin = SystemClock.uptimeMillis();
     buffer = isYV12 ? YUVUtil.YV12toYUV420byColor(buffer, width, height, formatVideoEncoder)
-        : YUVUtil.NV21toYUV420byColor(buffer, width, height, formatVideoEncoder);
+            : YUVUtil.NV21toYUV420byColor(buffer, width, height, formatVideoEncoder);
+
+    if (curMs - prevLogMs > 5000) {
+      prevLogMs = SystemClock.uptimeMillis();
+      Log.d(TAG, "getInputFrame toYUV420 run_times:" + (SystemClock.uptimeMillis() - begin));
+    }
+
     frame.setBuffer(buffer);
     return frame;
   }
