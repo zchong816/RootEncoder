@@ -36,6 +36,7 @@ import androidx.annotation.RequiresApi;
 import com.pedro.common.AudioCodec;
 import com.pedro.common.VideoCodec;
 import com.pedro.encoder.EncoderErrorCallback;
+import com.pedro.encoder.IPreviewFrameFpsCallback;
 import com.pedro.encoder.audio.AudioEncoder;
 import com.pedro.encoder.audio.GetAacData;
 import com.pedro.encoder.input.audio.CustomAudioEffect;
@@ -1006,4 +1007,14 @@ public abstract class Camera1Base {
 
   protected abstract void setVideoCodecImp(VideoCodec codec);
   protected abstract void setAudioCodecImp(AudioCodec codec);
+
+  public void setiPreviewFrameFpsCallback(IPreviewFrameFpsCallback iPreviewFrameFpsCallback) {
+    this.iPreviewFrameFpsCallback = iPreviewFrameFpsCallback;
+    if (cameraManager != null) {
+      cameraManager.setiPreviewFrameFpsCallback(iPreviewFrameFpsCallback);
+    }
+  }
+
+  IPreviewFrameFpsCallback iPreviewFrameFpsCallback = null;
+
 }

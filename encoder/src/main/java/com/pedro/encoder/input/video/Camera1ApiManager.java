@@ -31,6 +31,7 @@ import android.view.TextureView;
 import android.view.View;
 
 import com.pedro.encoder.Frame;
+import com.pedro.encoder.IPreviewFrameFpsCallback;
 import com.pedro.encoder.input.video.facedetector.FaceDetectorCallback;
 import com.pedro.encoder.input.video.facedetector.UtilsKt;
 
@@ -464,14 +465,24 @@ public class Camera1ApiManager implements Camera.PreviewCallback, Camera.FaceDet
   long previewMs = SystemClock.uptimeMillis();
   int previewFrameCount = 0;
 
+  IPreviewFrameFpsCallback iPreviewFrameFpsCallback = null;
+
+  public void setiPreviewFrameFpsCallback(IPreviewFrameFpsCallback iPreviewFrameFpsCallback) {
+    this.iPreviewFrameFpsCallback = iPreviewFrameFpsCallback;
+  }
+
   @Override
   public void onPreviewFrame(byte[] data, Camera camera) {
     long deltaMs = SystemClock.uptimeMillis() - previewMs;
     previewFrameCount++;
     if (deltaMs > 5000) {
-      Log.d(TAG, "onPreviewFrame fps:" + Math.round(previewFrameCount * 1.0f / deltaMs * 1000));
+      float fps = previewFrameCount * 1.0f / deltaMs * 1000;
+      Log.d(TAG, "onPreviewFrame fps:" + Math.round(fps));
       previewMs = SystemClock.uptimeMillis();
       previewFrameCount = 0;
+      if (iPreviewFrameFpsCallback != null) {
+        iPreviewFrameFpsCallback.onFps(fps);
+      }
     }
     long timeStamp = System.nanoTime() / 1000;
     getCameraData.inputYUVData(new Frame(data, rotation, facing == CameraHelper.Facing.FRONT && isPortrait, imageFormat, timeStamp));
