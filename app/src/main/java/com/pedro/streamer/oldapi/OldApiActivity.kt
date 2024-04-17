@@ -80,6 +80,7 @@ class OldApiActivity : AppCompatActivity(), ConnectChecker, TextureView.SurfaceT
       } else if (genericCamera1.isRecording || prepare()) {
         bStream.setImageResource(R.drawable.stream_stop_icon)
         etUrl.setText("rtmp://192.168.1.112:1935/rtmplive")
+        etUrl.setText("rtmp://172.16.200.103:1935/rtmplive")
         genericCamera1.startStream(etUrl.text.toString())
         ScreenOrientation.lockScreen(this)
       } else {
