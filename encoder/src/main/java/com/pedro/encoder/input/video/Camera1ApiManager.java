@@ -167,10 +167,27 @@ public class Camera1ApiManager implements Camera.PreviewCallback, Camera.FaceDet
     start(cameraSelect, width, height, fps);
   }
 
+  private boolean checkCanOpenWithRetry() {
+    boolean open = checkCanOpen();
+    if (!open) {
+      Log.e(TAG, "This camera resolution cant be opened " + width + "X" + height);
+    }
+    height = 720;
+    Log.e(TAG, "This camera try open " + width + "X" + height);
+    if (!open) {
+      Log.e(TAG, "This camera resolution cant be opened " + width + "X" + height);
+    }
+    height = 640;
+    Log.e(TAG, "This camera try open " + width + "X" + height);
+    open = checkCanOpen();
+    return open;
+  }
+
   private void start() {
     Log.d(TAG, "start width:" + width + " height:" + height + " fps:" + fps + " cameraSelect:" + cameraSelect + " rotation:" + rotation);
-    if (!checkCanOpen()) {
-      throw new CameraOpenException("This camera resolution cant be opened");
+    boolean open = checkCanOpenWithRetry();
+    if (!open) {
+      throw new CameraOpenException("This camera resolution cant be opened " + width + "X" + height);
     }
     yuvBuffer = new byte[width * height * 3 / 2];
     try {
@@ -581,9 +598,9 @@ public class Camera1ApiManager implements Camera.PreviewCallback, Camera.FaceDet
       for (int i = 0; i < number; i++) {
         if (cameraSelect != i) {
           cameraSelect = i;
-          if (!checkCanOpen()) {
+          if (!checkCanOpenWithRetry()) {
             cameraSelect = oldCamera;
-            throw new CameraOpenException("This camera resolution cant be opened");
+            throw new CameraOpenException("This camera resolution cant be opened " + width + "X" + height);
           }
           stop();
           start();
@@ -597,9 +614,9 @@ public class Camera1ApiManager implements Camera.PreviewCallback, Camera.FaceDet
     if (camera != null) {
       int oldCamera = cameraSelect;
       cameraSelect = cameraId;
-      if (!checkCanOpen()) {
+      if (!checkCanOpenWithRetry()) {
         cameraSelect = oldCamera;
-        throw new CameraOpenException("This camera resolution cant be opened");
+        throw new CameraOpenException("This camera resolution cant be opened " + width + "X" + height);
       }
       stop();
       start();
