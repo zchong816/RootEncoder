@@ -115,8 +115,14 @@ public class Camera1ApiManager implements Camera.PreviewCallback, Camera.FaceDet
   private void init() {
     cameraSelect = selectCameraBack();
     previewSizeBack = getPreviewSize();
+    for (int i = 0; i < previewSizeBack.size(); i++) {
+      Log.d(TAG, "previewSizeBack[" + i + "] " + previewSizeBack.get(i).width + "x" + previewSizeBack.get(i).height);
+    }
     cameraSelect = selectCameraFront();
     previewSizeFront = getPreviewSize();
+    for (int i = 0; i < previewSizeFront.size(); i++) {
+      Log.d(TAG, "previewSizeFront[" + i + "] " + previewSizeFront.get(i).width + "x" + previewSizeFront.get(i).height);
+    }
   }
 
   public void setRotation(int rotation) {
@@ -170,16 +176,16 @@ public class Camera1ApiManager implements Camera.PreviewCallback, Camera.FaceDet
   private boolean checkCanOpenWithRetry() {
     boolean open = checkCanOpen();
     if (!open) {
-      Log.e(TAG, "This camera resolution cant be opened " + width + "X" + height);
+      Log.e(TAG, "This camera resolution cant be opened " + width + "x" + height);
     }
     width = 720;
-    Log.e(TAG, "This camera try open " + width + "X" + height);
+    Log.e(TAG, "This camera try open " + width + "x" + height);
     open = checkCanOpen();
     if (!open) {
-      Log.e(TAG, "This camera resolution cant be opened " + width + "X" + height);
+      Log.e(TAG, "This camera resolution cant be opened " + width + "x" + height);
     }
     width = 640;
-    Log.e(TAG, "This camera try open " + width + "X" + height);
+    Log.e(TAG, "This camera try open " + width + "x" + height);
     open = checkCanOpen();
     return open;
   }
@@ -188,7 +194,7 @@ public class Camera1ApiManager implements Camera.PreviewCallback, Camera.FaceDet
     Log.d(TAG, "start width:" + width + " height:" + height + " fps:" + fps + " cameraSelect:" + cameraSelect + " rotation:" + rotation);
     boolean open = checkCanOpenWithRetry();
     if (!open) {
-      throw new CameraOpenException("This camera resolution cant be opened " + width + "X" + height);
+      throw new CameraOpenException("This camera resolution cant be opened " + width + "x" + height);
     }
     yuvBuffer = new byte[width * height * 3 / 2];
     try {
@@ -202,7 +208,7 @@ public class Camera1ApiManager implements Camera.PreviewCallback, Camera.FaceDet
 
       Log.i(TAG, "camera cameraSelect: " + cameraSelect + " " + (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT ? "FRONT" : "BACK"));
       Log.i(TAG, "before camera parameters flatten:" + parameters.flatten());
-      Log.i(TAG, "setPreviewSize: " + width + "X" + height);
+      Log.i(TAG, "setPreviewSize: " + width + "x" + height);
       Log.i(TAG, "useCustomSurfaceTexture: " + useCustomSurfaceTexture + " recordingHintEnable: " + recordingHintEnable + " videoStabilizationEnable: " + videoStabilizationEnable);
       parameters.setPreviewSize(width, height);
       parameters.setPreviewFormat(imageFormat);
@@ -558,7 +564,7 @@ public class Camera1ApiManager implements Camera.PreviewCallback, Camera.FaceDet
     while (iterator.hasNext()) {
       Camera.Size size = iterator.next();
       if (size.width > maxSize.width || size.height > maxSize.height) {
-        Log.i(TAG, size.width + "X" + size.height + ", not supported for encoder");
+        Log.i(TAG, size.width + "x" + size.height + ", not supported for encoder");
         iterator.remove();
       }
     }
@@ -601,7 +607,7 @@ public class Camera1ApiManager implements Camera.PreviewCallback, Camera.FaceDet
           cameraSelect = i;
           if (!checkCanOpenWithRetry()) {
             cameraSelect = oldCamera;
-            throw new CameraOpenException("This camera resolution cant be opened " + width + "X" + height);
+            throw new CameraOpenException("This camera resolution cant be opened " + width + "x" + height);
           }
           stop();
           start();
@@ -617,7 +623,7 @@ public class Camera1ApiManager implements Camera.PreviewCallback, Camera.FaceDet
       cameraSelect = cameraId;
       if (!checkCanOpenWithRetry()) {
         cameraSelect = oldCamera;
-        throw new CameraOpenException("This camera resolution cant be opened " + width + "X" + height);
+        throw new CameraOpenException("This camera resolution cant be opened " + width + "x" + height);
       }
       stop();
       start();
@@ -692,7 +698,7 @@ public class Camera1ApiManager implements Camera.PreviewCallback, Camera.FaceDet
       lanternEnable = false;
     }
   }
-  
+
   private Camera.AutoFocusCallback autoFocusTakePictureCallback = new Camera.AutoFocusCallback() {
     @Override
     public void onAutoFocus(boolean success, Camera camera) {
