@@ -174,6 +174,7 @@ public class Camera1ApiManager implements Camera.PreviewCallback, Camera.FaceDet
     }
     width = 720;
     Log.e(TAG, "This camera try open " + width + "X" + height);
+    open = checkCanOpen();
     if (!open) {
       Log.e(TAG, "This camera resolution cant be opened " + width + "X" + height);
     }
