@@ -173,30 +173,33 @@ public class Camera1ApiManager implements Camera.PreviewCallback, Camera.FaceDet
     start(cameraSelect, width, height, fps);
   }
 
-  private boolean checkCanOpenWithRetry() {
+  //兼容不同设备的的480p
+  private boolean checkCanOpenWithRetryHeight480() {
     boolean open = checkCanOpen();
     if (!open) {
       Log.e(TAG, "This camera resolution cant be opened " + width + "x" + height);
     } else {
       return true;
     }
-    width = 720;
-    Log.e(TAG, "This camera try open " + width + "x" + height);
-    open = checkCanOpen();
-    if (!open) {
-      Log.e(TAG, "This camera resolution cant be opened " + width + "x" + height);
-    } else {
-      return true;
+    if (height == 480) {
+      width = 720;
+      Log.e(TAG, "This camera try open " + width + "x" + height);
+      open = checkCanOpen();
+      if (!open) {
+        Log.e(TAG, "This camera resolution cant be opened " + width + "x" + height);
+      } else {
+        return true;
+      }
+      width = 640;
+      Log.e(TAG, "This camera try open " + width + "x" + height);
+      open = checkCanOpen();
     }
-    width = 640;
-    Log.e(TAG, "This camera try open " + width + "x" + height);
-    open = checkCanOpen();
     return open;
   }
 
   private void start() {
     Log.d(TAG, "start width:" + width + " height:" + height + " fps:" + fps + " cameraSelect:" + cameraSelect + " rotation:" + rotation);
-    boolean open = checkCanOpenWithRetry();
+    boolean open = checkCanOpenWithRetryHeight480();
     if (!open) {
       throw new CameraOpenException("This camera resolution cant be opened " + width + "x" + height);
     }
@@ -609,7 +612,7 @@ public class Camera1ApiManager implements Camera.PreviewCallback, Camera.FaceDet
       for (int i = 0; i < number; i++) {
         if (cameraSelect != i) {
           cameraSelect = i;
-          if (!checkCanOpenWithRetry()) {
+          if (!checkCanOpenWithRetryHeight480()) {
             cameraSelect = oldCamera;
             throw new CameraOpenException("This camera resolution cant be opened " + width + "x" + height);
           }
@@ -625,7 +628,7 @@ public class Camera1ApiManager implements Camera.PreviewCallback, Camera.FaceDet
     if (camera != null) {
       int oldCamera = cameraSelect;
       cameraSelect = cameraId;
-      if (!checkCanOpenWithRetry()) {
+      if (!checkCanOpenWithRetryHeight480()) {
         cameraSelect = oldCamera;
         throw new CameraOpenException("This camera resolution cant be opened " + width + "x" + height);
       }
