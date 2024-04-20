@@ -17,6 +17,20 @@ import com.pedro.library.view.OpenGlView;
  * @date 2024/4/20 11:54
  */
 public abstract class Camera1PreviewSyncVideo extends Camera1Base {
+
+    public Camera1PreviewSyncVideo(SurfaceView surfaceView) {
+        super(surfaceView);
+    }
+
+    public Camera1PreviewSyncVideo(TextureView textureView) {
+        super(textureView);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
+    public Camera1PreviewSyncVideo(OpenGlView openGlView) {
+        super(openGlView);
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     public Camera1PreviewSyncVideo(Context context) {
         super(context);
