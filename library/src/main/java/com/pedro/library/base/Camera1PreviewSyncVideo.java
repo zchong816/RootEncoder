@@ -7,6 +7,7 @@ import android.util.Pair;
 import android.view.SurfaceView;
 import android.view.TextureView;
 import com.pedro.encoder.input.video.CameraHelper;
+import com.pedro.encoder.video.FormatVideoEncoder;
 import com.pedro.library.view.GlStreamInterface;
 import com.pedro.library.view.OpenGlView;
 
@@ -37,6 +38,26 @@ public abstract class Camera1PreviewSyncVideo extends Camera1Base {
     }
 
 
+    @Override
+    public boolean prepareVideo(int width, int height, int fps, int bitrate, int iFrameInterval,
+                                int rotation, int profile, int level) {
+        if ((onPreview && (fps != videoEncoder.getFps() || rotation != videoEncoder.getRotation()))) {
+            stopPreview();
+        }
+        FormatVideoEncoder formatVideoEncoder =
+                glInterface == null ? FormatVideoEncoder.YUV420Dynamical : FormatVideoEncoder.SURFACE;
+        return videoEncoder.prepareVideoEncoder(previewWidth
+                , previewHeight
+                , videoEncoder.getFps()
+                , bitrate
+                , videoEncoder.getRotation()
+                , iFrameInterval
+                , formatVideoEncoder
+                , profile
+                , level);
+    }
+
+
     public void startPreview(CameraHelper.Facing cameraFacing, int width, int height, int fps, int rotation) {
         if (!isStreaming() && !onPreview) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2 && (glInterface instanceof GlStreamInterface)) {
@@ -50,7 +71,7 @@ public abstract class Camera1PreviewSyncVideo extends Camera1Base {
             previewHeight = wh.second;
             videoEncoder.setFps(fps);
             videoEncoder.setRotation(rotation);
-            prepareGlView(width, height, rotation);
+            prepareGlView(wh.first, wh.second, rotation);
             cameraManager.setRotation(rotation);
             onPreview = true;
         } else {
