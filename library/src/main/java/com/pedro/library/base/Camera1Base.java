@@ -90,12 +90,12 @@ public abstract class Camera1Base {
   protected VideoEncoder videoEncoder;
   private MicrophoneManager microphoneManager;
   private AudioEncoder audioEncoder;
-  private GlInterface glInterface;
+  protected GlInterface glInterface;
   private boolean streaming = false;
   protected boolean audioInitialized = false;
-  private boolean onPreview = false;
+  protected boolean onPreview = false;
   protected BaseRecordController recordController;
-  private int previewWidth, previewHeight;
+  protected int previewWidth, previewHeight;
   private final FpsListener fpsListener = new FpsListener();
 
   public Camera1Base(SurfaceView surfaceView) {
