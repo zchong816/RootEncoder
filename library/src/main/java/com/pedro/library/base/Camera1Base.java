@@ -86,7 +86,7 @@ public abstract class Camera1Base {
   private static final String TAG = "Camera1Base";
 
   private final Context context;
-  private final Camera1ApiManager cameraManager;
+  protected final Camera1ApiManager cameraManager;
   protected VideoEncoder videoEncoder;
   private MicrophoneManager microphoneManager;
   private AudioEncoder audioEncoder;
@@ -695,7 +695,7 @@ public abstract class Camera1Base {
     }
   }
 
-  private void prepareGlView(int width, int height, int rotation) {
+  protected void prepareGlView(int width, int height, int rotation) {
     if (glInterface != null && Build.VERSION.SDK_INT >= 18) {
       int w = width;
       int h = height;

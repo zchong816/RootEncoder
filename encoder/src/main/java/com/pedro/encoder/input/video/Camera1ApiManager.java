@@ -25,6 +25,7 @@ import android.hardware.Camera;
 import android.media.CamcorderProfile;
 import android.os.SystemClock;
 import android.util.Log;
+import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.TextureView;
@@ -149,7 +150,7 @@ public class Camera1ApiManager implements Camera.PreviewCallback, Camera.FaceDet
     cameraSelect = cameraFacing;
   }
 
-  public void start(CameraHelper.Facing cameraFacing, int width, int height, int fps) {
+  public Pair<Integer, Integer> start(CameraHelper.Facing cameraFacing, int width, int height, int fps) {
     int facing = cameraFacing == CameraHelper.Facing.BACK ? Camera.CameraInfo.CAMERA_FACING_BACK
         : Camera.CameraInfo.CAMERA_FACING_FRONT;
     this.width = width;
@@ -157,20 +158,20 @@ public class Camera1ApiManager implements Camera.PreviewCallback, Camera.FaceDet
     this.fps = fps;
     cameraSelect =
         facing == Camera.CameraInfo.CAMERA_FACING_BACK ? selectCameraBack() : selectCameraFront();
-    start();
+    return start();
   }
 
-  public void start(int facing, int width, int height, int fps) {
+  public Pair<Integer, Integer> start(int facing, int width, int height, int fps) {
     this.width = width;
     this.height = height;
     this.fps = fps;
     cameraSelect = facing;
     selectCamera(facing);
-    start();
+    return start();
   }
 
-  public void start(int width, int height, int fps) {
-    start(cameraSelect, width, height, fps);
+  public Pair<Integer, Integer> start(int width, int height, int fps) {
+    return start(cameraSelect, width, height, fps);
   }
 
   //兼容不同设备的的480p
@@ -197,7 +198,7 @@ public class Camera1ApiManager implements Camera.PreviewCallback, Camera.FaceDet
     return open;
   }
 
-  private void start() {
+  private Pair<Integer, Integer> start() {
     Log.d(TAG, "start width:" + width + " height:" + height + " fps:" + fps + " cameraSelect:" + cameraSelect + " rotation:" + rotation);
     boolean open = checkCanOpenWithRetryHeight480();
     if (!open) {
@@ -317,6 +318,7 @@ public class Camera1ApiManager implements Camera.PreviewCallback, Camera.FaceDet
       if (cameraCallbacks != null) cameraCallbacks.onCameraError("Error: " + e.getMessage());
       Log.e(TAG, "Error", e);
     }
+    return new Pair<>(width, height);
   }
 
   public void setPreviewOrientation(final int orientation) {
