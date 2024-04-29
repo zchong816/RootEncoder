@@ -66,13 +66,13 @@ public abstract class Camera1PreviewSyncVideo extends Camera1Base {
                 cameraManager.setCameraFacing(cameraFacing);
                 return;
             }
+            videoEncoder.setFps(fps);
+            videoEncoder.setRotation(rotation);
+            prepareGlView(width, height, rotation);
+            cameraManager.setRotation(rotation);
             Pair<Integer, Integer> wh = cameraManager.start(cameraFacing, width, height, videoEncoder.getFps());
             previewWidth = wh.first;
             previewHeight = wh.second;
-            videoEncoder.setFps(fps);
-            videoEncoder.setRotation(rotation);
-            prepareGlView(wh.first, wh.second, rotation);
-            cameraManager.setRotation(rotation);
             onPreview = true;
         } else {
             Log.e(TAG, "Streaming or preview started, ignored");
