@@ -113,8 +113,7 @@ class FromFileActivity : AppCompatActivity(), ConnectChecker,
         if (!genericFromFile.isRecording) ScreenOrientation.unlockScreen(this)
       } else if (genericFromFile.isRecording || prepare()) {
         if (!genericFromFile.isAudioDeviceEnabled) genericFromFile.playAudioDevice()
-        etUrl.setText("rtmp://192.168.1.112:1935/rtmplive")
-        etUrl.setText("rtmp://172.16.200.103:1935/rtmplive")
+        etUrl.setText("rtmp://192.168.1.214:1935/rtmplive")
         genericFromFile.startStream(etUrl.text.toString())
         bStream.setImageResource(R.drawable.stream_stop_icon)
         ScreenOrientation.lockScreen(this)
